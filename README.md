@@ -10,7 +10,7 @@ Trailblazer redefines the way you search. Unlike traditional search engines, Tra
 
 Inspired by the need for a more engaging, visually-organized search experience, Trailblazer is powered by AI to automatically generate relevant nodes, suggest related topics, and provide intelligent insights about your queries.
 
-![Trailblazer Demo](mindmapdemo.png)
+![Trailblazer Demo](mindmap.png)
 
 ---
 
