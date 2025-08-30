@@ -115,7 +115,6 @@ Working on **Trailblazer** taught us invaluable lessons about:
 - **Owen Benedict Tanjung** — Fullstack Developer
 - **Cornelius Edgar Sanjoyo** — UI/UX Designer
 - **Kennard Kustiadi** — AI Specialist
-- **Declan** — Backend Engineer
 
 ---
 
