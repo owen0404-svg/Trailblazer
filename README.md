@@ -18,7 +18,7 @@ Inspired by the need for a more engaging, visually-organized search experience, 
 
 🚀 Try out the Trailblazer search engine live:
 
-🔗 [Live Trailblazer Demo](https://trailblazer-demo.netlify.app)
+🔗 [Live Trailblazer Demo](https://super-cheesecake-731ed1.netlify.app/et1)
 
 ---
 
