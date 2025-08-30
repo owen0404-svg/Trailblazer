@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Trailblazer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(-45deg, #0a0a0a, #1a0033, #003366, #330033);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color: #fff;
+    overflow-x: hidden;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Forces body to fill the viewport height */
+    padding-top: 100px; /* Adds space between navbar and content */
+}
+
+/* Gradient animation */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Navigation */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 1.5rem 3rem;
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(20px);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    background: linear-gradient(45deg, #627eea, #9f7aea);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-links a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(98, 126, 234, 0.5);
+}
+
+/* About Section (Mid-section) */
+.about {
+    padding: 6rem 2rem;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: linear-gradient(45deg, #0a0a0a, #19196d);
+    border-radius: 10px;
+    flex-grow: 1; /* Allows content to grow and take available space */
+    margin-top: 50px; /* Adds space between navbar and content */
+    margin-bottom: 100px; /* Adds space between content and footer */
+}
+
+.about h1 {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(45deg, #627eea, #9f7aea);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.about p {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 2rem;
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #627eea, #9f7aea);
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(98, 126, 234, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(98, 126, 234, 0.5);
+}
+
+/* Footer */
+footer {
+    padding: 0.5rem 2rem; /* Adjusted padding for smaller footer */
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+    position: relative;
+    width: 100%;
+    background-color: #0a0a0a;
+    margin-top: 50px; /* Adjust top margin for proper spacing */
+    bottom: 0;
+}
+
+/* Ensuring sections above the footer are correctly spaced */
+section {
+    padding-bottom: 50px; /* Prevents content from being too close to the footer */
+}
+
+/* Removes unwanted symbols */
+.particle {
+    display: none; /* Hides the floating symbols */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+</style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">Ξ TRAILBLAZER</div>
+            <ul class="nav-links">
+                <li><a href="et1.html">Home</a></li>
+                <li><a href="Abt.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- About Section -->
+    <section class="about">
+        <h1>About Trailblazer</h1>
+        <p>
+            Trailblazer is an AI-powered platform designed to simplify the process of generating interactive, detailed mindmaps. With a focus on speed and ease, we help users quickly map their ideas and create visually engaging roadmaps that provide both structure and creativity.
+        </p>
+        <p>
+            Our goal is to make mindmapping accessible for everyone, whether you're an entrepreneur, student, or creative professional. We offer a fully free and intuitive service that doesn't require sign-ups or complex setups.
+        </p>
+        <div class="cta-buttons">
+        </div>
+    </section>
+
+    <!-- Floating Particles -->
+    <script>
+        // Create floating particles effect
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.fontSize = Math.random() * 10 + 10 + 'px';
+            particle.innerHTML = '◆';
+            particle.style.color = `rgba(98, 126, 234, ${Math.random() * 0.5 + 0.1})`;
+            document.body.appendChild(particle);
+        }
+    </script>
+
+</body>
+</html>

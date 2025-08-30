@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trailblazer - The Roadmap Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(-45deg, #0a0a0a, #1a0033, #003366, #330033);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color: #fff;
+    overflow-x: hidden;
+    cursor: default;
+}
+
+/* Gradient animation */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #627eea, #9f7aea);
+            border-radius: 10px;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(ellipse at center, #19196d 0%, #0a0a0a 100%);
+            overflow: hidden;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            animation: fadeInUp 1.5s ease;
+        }
+
+        .glitch-title {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: bold;
+            background: linear-gradient(45deg, #627eea, #9f7aea, #627eea);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 3s ease infinite;
+            position: relative;
+            letter-spacing: 0.1em;
+            text-shadow: 0 0 40px rgba(98, 126, 234, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            margin-top: 1rem;
+            opacity: 0.9;
+            animation: fadeIn 2s ease 0.5s both;
+            background: linear-gradient(90deg, #fff, #9f7aea);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            z-index: 10;
+        }
+
+        .scroll-indicator::before {
+            content: '↓';
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 3rem;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav.scrolled {
+            padding: 1rem 3rem;
+            background: rgba(10, 10, 10, 0.95);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #627eea, #9f7aea);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 1rem;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #627eea, #9f7aea);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(98, 126, 234, 0.5);
+        }
+
+        /* Feature Cards */
+        .features {
+            padding: 8rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            background: linear-gradient(45deg, #627eea, #9f7aea);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(98, 126, 234, 0.1), rgba(159, 122, 234, 0.1));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(98, 126, 234, 0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(98, 126, 234, 0.3);
+            border-color: rgba(98, 126, 234, 0.5);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #627eea, #9f7aea);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .card-description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, rgba(98, 126, 234, 0.05), rgba(159, 122, 234, 0.05));
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #627eea, #9f7aea);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 8rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle, rgba(98, 126, 234, 0.1), transparent);
+            transform: translate(-50%, -50%);
+            animation: pulse 4s ease infinite;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #9f7aea);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #627eea, #9f7aea);
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(98, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(98, 126, 234, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 2px solid rgba(98, 126, 234, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(98, 126, 234, 0.1);
+            border-color: #627eea;
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-15px); }
+            60% { transform: translateX(-50%) translateY(-7px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.3; }
+        }
+
+        /* Floating particles */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            opacity: 0.5;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            to {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-content {
+                padding: 0 1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">Ξ TRAILBLAZER</div>
+            <ul class="nav-links">
+                <li><a href="et1.html">Home</a></li>
+                <li><a href="abt.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section with 3D Ethereum Logo -->
+    <section class="hero" id="home">
+        <div id="canvas-container"></div>
+        <div class="hero-content">
+            <h1 class="glitch-title">TRAILBLAZER</h1>
+            <p class="subtitle">The Roadmap Generator</p>
+        </div>
+        <div class="scroll-indicator"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2 class="section-title">Why Trailblazer?</h2>
+        <div class="cards-container">
+            <div class="feature-card">
+                <div class="card-icon">⚡</div>
+                <h3 class="card-title">Fast Mindmaps</h3>
+                <p class="card-description">
+                    Trailblazer offers a fast and simple way to clearly map out ideas and make mindmaps that help users 
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="card-icon">🔗</div>
+                <h3 class="card-title">Free and AI based</h3>
+                <p class="card-description">
+                    Trailblazer operates on AI based code, and is 100% free for users to use without any signing-up
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="card-icon">🚀</div>
+                <h3 class="card-title">Detailed, but Not Boring</h3>
+                <p class="card-description">
+                    Trailblazer makes mindmaps that are not only fast but also detailed and provides descriptions, the mindmaps that are generated aren't just good, they're also interactive and interesting to keep users engaged
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">4000+</div>
+                <div class="stat-label">Mindmaps Created</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">100</div>
+                <div class="stat-label">Users</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">600000+</div>
+                <div class="stat-label">Unique Searchable Terms</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="cta-content">
+            <h2 class="cta-title">Ready to Build the Future?</h2>
+            <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 2rem;">
+                Join the global community building the decentralized web
+            </p>
+            <div class="cta-buttons">
+                <a href="index.html" class="btn btn-primary">Get Started</a>
+                <a href="abt.html" class="btn btn-secondary">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Trailblazer. Building the future.</p>
+    </footer>
+
+    <!-- Floating Particles -->
+    <script>
+        // Create floating particles
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.fontSize = Math.random() * 10 + 10 + 'px';
+            particle.innerHTML = '◆';
+            particle.style.color = `rgba(98, 126, 234, ${Math.random() * 0.5 + 0.1})`;
+            document.body.appendChild(particle);
+        }
+    </script>
+
+    <!-- Three.js 3D Ethereum Logo -->
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Create Ethereum logo geometry (octahedron-like shape)
+        const geometry = new THREE.OctahedronGeometry(2, 0);
+        
+        // Create gradient material
+        const material = new THREE.MeshPhongMaterial({
+            color: 0x627eea,
+            emissive: 0x627eea,
+            emissiveIntensity: 0.2,
+            shininess: 100,
+            specular: 0x9f7aea,
+            wireframe: false
+        });
+
+        const ethLogo = new THREE.Mesh(geometry, material);
+        scene.add(ethLogo);
+
+        // Add wireframe overlay for visual interest
+        const wireframeGeometry = new THREE.OctahedronGeometry(2.02, 0);
+        const wireframeMaterial = new THREE.MeshBasicMaterial({
+            color: 0x9f7aea,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.3
+        });
+        const wireframe = new THREE.Mesh(wireframeGeometry, wireframeMaterial);
+        scene.add(wireframe);
+
+        // Lighting
+        const light1 = new THREE.DirectionalLight(0xffffff, 1);
+        light1.position.set(5, 5, 5);
+        scene.add(light1);
+
+        const light2 = new THREE.DirectionalLight(0x9f7aea, 0.5);
+        light2.position.set(-5, -5, -5);
+        scene.add(light2);
+
+        const ambientLight = new THREE.AmbientLight(0x627eea, 0.3);
+        scene.add(ambientLight);
+
+        // Add point lights for glow effect
+        const pointLight1 = new THREE.PointLight(0x627eea, 2, 10);
+        pointLight1.position.set(3, 3, 3);
+        scene.add(pointLight1);
+
+        const pointLight2 = new THREE.PointLight(0x9f7aea, 2, 10);
+        pointLight2.position.set(-3, -3, -3);
+        scene.add(pointLight2);
+
+        camera.position.z = 5;
+
+        // Mouse tracking
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetRotationX = 0;
+        let targetRotationY = 0;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        // Scroll tracking
+        let scrollY = 0;
+        window.addEventListener('scroll', () => {
+            scrollY = window.scrollY;
+            
+            // Update navbar
+            const navbar = document.getElementById('navbar');
+            if (scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            // Animate elements on scroll
+            const cards = document.querySelectorAll('.feature-card');
+            cards.forEach((card, index) => {
+                const rect = card.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    card.style.opacity = '1';
+                }
+            });
+
+            const statItems = document.querySelectorAll('.stat-item');
+            statItems.forEach((item, index) => {
+                const rect = item.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                    }, index * 100);
+                }
+            });
+        });
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Smooth rotation based on mouse position
+            targetRotationX = mouseY * 0.5;
+            targetRotationY = mouseX * 0.5;
+
+            ethLogo.rotation.x += (targetRotationX - ethLogo.rotation.x) * 0.05;
+            ethLogo.rotation.y += (targetRotationY - ethLogo.rotation.y) * 0.05;
+            
+            wireframe.rotation.x = ethLogo.rotation.x;
+            wireframe.rotation.y = ethLogo.rotation.y;
+
+            // Auto-rotate
+            ethLogo.rotation.z += 0.002;
+            wireframe.rotation.z += 0.002;
+
+            // Scale based on scroll
+            const scale = 1 + (scrollY * 0.001);
+            ethLogo.scale.set(scale, scale, scale);
+            wireframe.scale.set(scale, scale, scale);
+
+            // Move logo based on scroll
+            ethLogo.position.y = -scrollY * 0.002;
+            wireframe.position.y = -scrollY * 0.002;
+
+            // Pulse effect
+            const pulse = Math.sin(Date.now() * 0.001) * 0.1 + 1;
+            material.emissiveIntensity = 0.2 * pulse;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Animate stats numbers on scroll
+        let animated = false;
+        function animateNumbers() {
+            if (animated) return;
+            
+            const statsSection = document.querySelector('.stats');
+            const rect = statsSection.getBoundingClientRect();
+            
+            if (rect.top < window.innerHeight && rect.bottom > 0) {
+                animated = true;
+                const numbers = document.querySelectorAll('.stat-number');
+                
+                numbers.forEach(num => {
+                    const target = parseInt(num.innerText.replace(/\D/g, ''));
+                    const suffix = num.innerText.replace(/[0-9]/g, '').replace('.', '');
+                    let current = 0;
+                    const increment = target / 100;
+                    
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        
+                        if (suffix.includes('B')) {
+                            num.innerText = '$' + Math.floor(current) + 'B+';
+                        } else if (suffix.includes('M')) {
+                            num.innerText = Math.floor(current) + 'M+';
+                        } else {
+                            num.innerText = Math.floor(current) + '+';
+                        }
+                    }, 20);
+                });
+            }
+        }
+
+        window.addEventListener('scroll', animateNumbers);
+    </script>
+</body>
+</html>
